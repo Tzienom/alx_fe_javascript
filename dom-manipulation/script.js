@@ -32,7 +32,7 @@ document.addEventListener("DOMContentLoaded", () => {
     let shuffled = shuffleQuotes(quotes);
     let currentIndex = 0;
 
-    function showRandomQuote() {
+    function displayRandomQuote() {
         const searchInput = (quoteDisplay.textContent = shuffled[currentIndex].text);
     }
 
