@@ -3,19 +3,51 @@
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=TikTok+Sans:opsz,wght@12..36,300..900&display=swap"
+            rel="stylesheet" />
+        <link rel="stylesheet" href="styles.css" />
         <title>Dynamic Quote Generator</title>
     </head>
 
     <body>
-        <h1>Dynamic Quote Generator</h1>
-        <div id="quoteDisplay"></div>
-        <button id="newQuote">Show New Quote</button>
+        <h1 class="heading-1">Dynamic Quote Generator</h1>
 
-        <div>
-            <input id="newQuoteText" type="text" placeholder="Enter a new quote" />
-            <input id="newQuoteCategory" type="text" placeholder="Enter quote category" />
-            <button id="addQuote">Add Quote</button>
-        </div>
+        <main>
+            <div class="search-flex flex">
+                <div class="search-bar">
+                    <input type="search" placeholder="Search Quote" class="input-field" id="search-input" />
+                    <button class="btn search-btn">Search</button>
+                </div>
+
+                <select id="quote-categories">
+                    <option value="all">All</option>
+                </select>
+            </div>
+            <!-- End of flex -->
+
+            <div id="quoteDisplay">
+                <div class="flex">
+                    <p id="author" class="paragraph">Author</p>
+                    <p id="date-added" class="paragraph">Date Added</p>
+                </div>
+
+                <p id="quote">Lorem ipsum dolor sit amet...</p>
+
+                <p id="category">Category:</p>
+            </div>
+            <!-- End of quoteDisplay -->
+
+            <button id="newQuote">Show New Quote</button>
+
+            <div class="add-quote-form">
+                <input id="newQuoteText" type="text" placeholder="Enter a new quote" />
+                <input id="newQuoteCategory" type="text" placeholder="Enter quote category" class="category-input" />
+                <button id="addQuote">Add Quote</button>
+            </div>
+        </main>
 
         <script type="module" src="script.js"></script>
     </body>

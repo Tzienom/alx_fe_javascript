@@ -1,0 +1,103 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: "TikTok Sans", serif;
+    background-color: #141c2f;
+    color: white;
+    min-height: 100vh;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+button {
+    background: #0079fe;
+    color: white;
+    padding: 0.5em 1em;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+button,
+input {
+    border: 0;
+    outline: 0;
+    font-family: inherit;
+    border-radius: 4px;
+}
+
+input {
+    background-color: #1f2a48;
+    color: white;
+    width: 100%;
+    padding: 0.5em 1em;
+    height: 45px;
+}
+
+input::placeholder {
+    color: white;
+}
+
+.flex {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+/* MAIN */
+main {
+    max-width: 570px;
+    width: 100%;
+    padding: 0 1.3em;
+}
+
+.search-flex.flex {
+    column-gap: 1rem;
+}
+
+.search-bar {
+    position: relative;
+    width: 80%;
+    margin: 2rem 0;
+}
+
+.search-btn {
+    position: absolute;
+    top: 0;
+    right: 0;
+    transform: translate(-10%, 25%);
+}
+
+#quote-categories {
+    border: 0;
+    outline: 0;
+    background: #1f2a48;
+    height: 45px;
+    width: 20%;
+    color: white;
+}
+
+#quoteDisplay {
+    background-color: #1f2a48;
+    border-radius: 7px;
+    padding: 2em;
+}
+
+#quote {
+    margin: 5rem 0;
+    text-align: center;
+}
+
+#newQuote {
+    margin: 1rem 0;
+}
+
+.category-input {
+    margin: 1rem 0;
+}
