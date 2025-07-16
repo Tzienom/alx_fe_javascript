@@ -51,6 +51,8 @@ document.addEventListener("DOMContentLoaded", () => {
         const quoteValue = newQuote.value.trim();
         const categoryValue = quoteCategory.value.trim();
 
+        const userAddedQuote = document.createElement("p");
+
         if (quoteValue !== "" && categoryValue !== "") {
             quotes.push({
                 id: Math.max(...quotes.map((q) => q.id + 1)),
@@ -59,6 +61,9 @@ document.addEventListener("DOMContentLoaded", () => {
             });
             newQuote.value = "";
             quoteCategory.value = "";
+
+            userAddedQuote.textContent = quoteValue;
+            quoteDisplay.appendChild(userAddedQuote);
         } else {
             alert("Fill in both fields.");
         }
