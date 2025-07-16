@@ -37,7 +37,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     newQuoteBtn.addEventListener("click", () => {
-        showRandomQuote();
+        displayRandomQuote();
 
         currentIndex++;
 
