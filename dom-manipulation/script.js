@@ -22,27 +22,27 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     /**
-     * ShuffleQuotes returns a shallow copy of shuffled data
+     * displayRandomQuotes returns a shallow copy of shuffled data
      * from "quotes", the original array.
      */
-    function shuffleQuotes(quotesArray) {
+    function displayRandomQuotes(quotesArray) {
         return shuffleElements([...quotesArray]);
     }
 
-    let shuffled = shuffleQuotes(quotes);
+    let shuffled = displayRandomQuotes(quotes);
     let currentIndex = 0;
 
-    function displayRandomQuote() {
-        const searchInput = (quoteDisplay.textContent = shuffled[currentIndex].text);
+    function showRandomQuote() {
+        const displayQuote = (quoteDisplay.innerHTML = shuffled[currentIndex].text);
     }
 
     newQuoteBtn.addEventListener("click", () => {
-        displayRandomQuote();
+        showRandomQuote();
 
         currentIndex++;
 
         if (currentIndex >= shuffled.length) {
-            shuffled = shuffleQuotes(quotes);
+            shuffled = displayRandomQuotes(quotes);
             currentIndex = 0;
         }
     });
@@ -65,8 +65,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
         console.log(quotes);
     }
-
-    console.log(Math.max(...quotes.map((q) => q.id + 1)));
 
     addQuoteBtn.addEventListener("click", createAddQuoteForm);
 });
