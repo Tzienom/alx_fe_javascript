@@ -6,6 +6,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const newQuote = document.getElementById("newQuoteText");
     const quoteCategory = document.getElementById("newQuoteCategory");
     const addQuoteBtn = document.getElementById("addQuote");
+    const importFileBtn = document.getElementById("importFile");
 
     let shuffled = []; // Would be used to hold shuffled data
     let currentIndex = 0; // Would be used to increment shuffled data index progressively.
@@ -35,7 +36,6 @@ document.addEventListener("DOMContentLoaded", () => {
         //shuffled = displayRandomQuotes(quotes);
 
         const lastSavedQuote = sessionStorage.getItem("currentQuote");
-
         if (lastSavedQuote) {
             const { index, quote } = JSON.parse(lastSavedQuote);
             quoteDisplay.innerHTML = quote.text;
@@ -120,22 +120,24 @@ document.addEventListener("DOMContentLoaded", () => {
 
             sessionStorage.setItem("currentQuote", JSON.stringify(lastViewedQuote));
         }
-
-        console.log(shuffled);
     }
 
     newQuoteBtn.addEventListener("click", () => {
         currentIndex++;
 
-        console.log(`${currentIndex}`);
         if (currentIndex >= shuffled.length) {
             shuffled = displayRandomQuotes(quotes); // Reshuffle data
             currentIndex = 0;
 
             /**
-             * Because showRandomQuote() is immediately called in loadQuotes(),
-             * it must be called here again, else the very first data
-             * in the array shall be skipped when the data (array) is reshuffled.
+             * showRandQuote() is invoked here in order to reshuffle
+             * data immediately.
+             *
+             * NOTE: Because currentIndex = 0 at the start of the script and yet
+             * there is no preloaded quote, the first button click shall display no
+             * quote when currentIndex = 1, until currentIndex = 2, which skips
+             * the first quote in the array. It is also for that reason showRandomQuote
+             * is called here--to fix skipping and not displaying the first quote.
              */
             showRandomQuote();
             return;
@@ -144,6 +146,50 @@ document.addEventListener("DOMContentLoaded", () => {
         showRandomQuote();
     });
 
+    // Allow user to download quotes as JSON file
+    function exportJsonFile() {
+        const exportBtn = document.getElementById("export-btn");
+        const quotesToExport = localStorage.getItem("savedQuotes");
+        const quotesBlob = new Blob([quotesToExport], { type: "application/json" });
+
+        const quotesURL = URL.createObjectURL(quotesBlob);
+        const downloadLink = document.createElement("a");
+
+        downloadLink.href = quotesURL;
+        downloadLink.download = "quotes.json";
+
+        exportBtn.addEventListener("click", () => {
+            downloadLink.click();
+
+            URL.revokeObjectURL(quotesURL);
+        });
+    }
+
+    function importFromJsonFile(event) {
+        const fileReader = new FileReader();
+        fileReader.onload = function (event) {
+            const importedQuotes = JSON.parse(event.target.result);
+            quotes.push(...importedQuotes);
+            saveQuotes();
+            alert("Quotes imported successfully!");
+        };
+        fileReader.readAsText(event.target.files[0]);
+    }
+
+    function saveQuotes() {
+        localStorage.setItem("savedQuotes", JSON.stringify(quotes));
+
+        /**
+         * Immediately add the imported file to the queue
+         * of data to be displayed, without the need for
+         * a manual reload.
+         */
+        shuffled = displayRandomQuotes(quotes);
+    }
+
     addQuoteBtn.addEventListener("click", createAddQuoteForm);
+    importFileBtn.addEventListener("change", importFromJsonFile);
+
     loadQuotes();
+    exportJsonFile();
 });
