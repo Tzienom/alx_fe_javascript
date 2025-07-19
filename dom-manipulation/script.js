@@ -235,7 +235,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
-    function filterQuote(category) {
+    function filterQuote(selectedCategory) {
         /**
          * currentIndex must be reset in here, else it will yield
          * an error. This is because currentIndex is a global variable,
@@ -248,7 +248,9 @@ document.addEventListener("DOMContentLoaded", () => {
         const quotesInStorage = JSON.parse(localStorage.getItem("savedQuotes"));
 
         categoryFilter =
-            category === "all" ? [...quotesInStorage] : quotesInStorage.filter((quote) => quote.category === category);
+            selectedCategory === "all"
+                ? [...quotesInStorage]
+                : quotesInStorage.filter((quote) => quote.category === selectedCategory);
 
         shuffled = displayRandomQuotes(categoryFilter);
 
