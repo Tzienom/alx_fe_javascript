@@ -8,10 +8,38 @@ document.addEventListener("DOMContentLoaded", () => {
     const addQuoteBtn = document.getElementById("addQuote");
     const importFileBtn = document.getElementById("importFile");
 
+    const quoteSelect = document.getElementById("quote-categories");
+
     let shuffled = []; // Would be used to hold shuffled data
     let currentIndex = 0; // Would be used to increment shuffled data index progressively.
 
-    let currentQuote;
+    let currentQuote; // Would be used to hold quote in sessionStorage.
+    //let activeQ
+
+    let quoteCategories = [];
+
+    function findMaxID(arr) {
+        if (!arr.length) return 0;
+
+        /**
+         * First create a new array of IDs before
+         * finding maximum number.
+         */
+        arr = arr.map((a) => a.id);
+
+        /**
+         * Using a custom Math.max() will be more memory efficient
+         * should the quotes data grow very large
+         */
+        let max = -Infinity;
+        for (let i = 0; i < arr.length; i++) {
+            if (arr[i] > max) {
+                max = arr[i];
+            }
+        }
+
+        return max;
+    }
 
     function loadQuotes() {
         try {
@@ -25,32 +53,28 @@ document.addEventListener("DOMContentLoaded", () => {
                  */
                 quotes.length = 0;
                 quotes.push(...quotesInStorage);
+                //maxID = findMaxID(JSON.parse(localStorage.getItem("savedQuotes")));
             }
         } catch (error) {
             console.error("Could not parse quotes from localStorage:", error);
         }
 
         /**
-         * Shuffle data from localStorage upon page load
+         * Check if there is a quote in sessionStorage, if true,
+         * display the quote.
          */
-        //shuffled = displayRandomQuotes(quotes);
-
         const lastSavedQuote = sessionStorage.getItem("currentQuote");
         if (lastSavedQuote) {
             const { index, quote } = JSON.parse(lastSavedQuote);
             quoteDisplay.innerHTML = quote.text;
             shuffled = displayRandomQuotes(quotes);
         }
-
-        /**
-         * Immediately display a quote
-         */
-        //showRandomQuote();
     }
 
     /**
      * Reusable Component: Fisher-Yates algorithm to randomize elements
-     * in an array without repetition.
+     * in an array without repetition. In plainer terms, each element has
+     * an equal chance of being randomized.
      */
     function shuffleElements(elements) {
         for (let i = elements.length - 1; i > 0; i--) {
@@ -122,29 +146,29 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
-    newQuoteBtn.addEventListener("click", () => {
-        currentIndex++;
-
-        if (currentIndex >= shuffled.length) {
-            shuffled = displayRandomQuotes(quotes); // Reshuffle data
-            currentIndex = 0;
-
-            /**
-             * showRandQuote() is invoked here in order to reshuffle
-             * data immediately.
-             *
-             * NOTE: Because currentIndex = 0 at the start of the script and yet
-             * there is no preloaded quote, the first button click shall display no
-             * quote when currentIndex = 1, until currentIndex = 2, which skips
-             * the first quote in the array. It is also for that reason showRandomQuote
-             * is called here--to fix skipping and not displaying the first quote.
-             */
-            showRandomQuote();
-            return;
-        }
-
-        showRandomQuote();
-    });
+    //newQuoteBtn.addEventListener("click", () => {
+    //    currentIndex++;
+    //
+    //    if (currentIndex >= shuffled.length) {
+    //        shuffled = displayRandomQuotes(quotes); // Reshuffle data
+    //        currentIndex = 0;
+    //
+    //        /**
+    //         * showRandQuote() is invoked here in order to reshuffle
+    //         * data immediately.
+    //         *
+    //         * NOTE: Because currentIndex = 0 at the start of the script and yet
+    //         * there is no preloaded quote, the first button click shall display no
+    //         * quote when currentIndex = 1, until currentIndex = 2, which skips
+    //         * the first quote in the array. It is also for that reason showRandomQuote
+    //         * is called here--to fix skipping and not displaying the first quote.
+    //         */
+    //        showRandomQuote();
+    //        return;
+    //    }
+    //
+    //    showRandomQuote();
+    //});
 
     // Allow user to download quotes as JSON file
     function exportJsonFile() {
@@ -167,9 +191,28 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function importFromJsonFile(event) {
         const fileReader = new FileReader();
+
         fileReader.onload = function (event) {
             const importedQuotes = JSON.parse(event.target.result);
-            quotes.push(...importedQuotes);
+
+            try {
+                const quotesInStorage = JSON.parse(localStorage.getItem("savedQuotes")) || [];
+                const maxID = findMaxID(quotesInStorage);
+
+                if (Array.isArray(quotesInStorage)) {
+                    quotes.length = 0;
+
+                    const updatedQuotes = importedQuotes.map((newQuote, index) => ({
+                        ...newQuote,
+                        id: maxID + index + 1
+                    }));
+
+                    quotes.push(...quotesInStorage, ...updatedQuotes);
+                }
+            } catch (error) {
+                console.error("Could not parse quotes from localStorage:", error);
+            }
+
             saveQuotes();
             alert("Quotes imported successfully!");
         };
@@ -187,9 +230,81 @@ document.addEventListener("DOMContentLoaded", () => {
         shuffled = displayRandomQuotes(quotes);
     }
 
+    function generateCategoryValues() {
+        let quotesInStorage = JSON.parse(localStorage.getItem("savedQuotes"));
+
+        try {
+            if (Array.isArray(quotesInStorage)) {
+                const defaultOption = document.createElement("option");
+                defaultOption.value = "all";
+                defaultOption.textContent = "All";
+
+                quoteSelect.appendChild(defaultOption);
+
+                quotesInStorage.map((quoteCategory) => {
+                    quoteCategories.push(quoteCategory.category);
+                });
+
+                quoteCategories = quoteCategories.filter((value, index, self) => self.indexOf(value) === index);
+
+                quoteCategories.forEach((category) => {
+                    const option = document.createElement("option");
+                    option.value = category;
+                    option.textContent = category;
+                    quoteSelect.appendChild(option);
+                });
+            }
+
+            return quoteCategories;
+        } catch (error) {
+            console.log("Could not parse quote categories from localStorage:", error);
+        }
+    }
+
+    function filterQuotesByCategory(category) {
+        const quotesInStorage = JSON.parse(localStorage.getItem("savedQuotes"));
+
+        const filteredQuotes = quotesInStorage.filter((quote) => quote.category === category);
+
+        shuffled = displayRandomQuotes(filteredQuotes);
+        showRandomQuote();
+
+        return;
+    }
+
+    quoteSelect.addEventListener("change", (event) => {
+        filterQuotesByCategory(event.target.value);
+    });
+
     addQuoteBtn.addEventListener("click", createAddQuoteForm);
     importFileBtn.addEventListener("change", importFromJsonFile);
 
+    newQuoteBtn.addEventListener("click", () => {
+        currentIndex++;
+
+        if (currentIndex >= shuffled.length) {
+            shuffled = displayRandomQuotes(filterQuotesByCategory); // Reshuffle data
+            currentIndex = 0;
+
+            /**
+             * showRandQuote() is invoked here in order to reshuffle
+             * data immediately.
+             *
+             * NOTE: Because currentIndex = 0 at the start of the script and yet
+             * there is no preloaded quote, the first button click shall display no
+             * quote when currentIndex = 1, until currentIndex = 2, which skips
+             * the first quote in the array. It is also for that reason showRandomQuote
+             * is called here--to fix skipping and not displaying the first quote.
+             */
+            showRandomQuote();
+            return;
+        }
+
+        showRandomQuote();
+    });
+
     loadQuotes();
     exportJsonFile();
+    //filterQuotesByCategory();
+    generateCategoryValues();
 });
