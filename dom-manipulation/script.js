@@ -14,7 +14,7 @@ document.addEventListener("DOMContentLoaded", () => {
     let currentIndex = 0; // Would be used to increment shuffled data index progressively.
 
     let currentQuote; // Would be used to hold quote in sessionStorage.
-    let activeQuotes = [...quotes];
+    let categoryFilter = [...quotes];
 
     let quoteCategories = [];
 
@@ -51,8 +51,8 @@ document.addEventListener("DOMContentLoaded", () => {
                  * incremented twice the original length, each time there
                  * is a page reload.
                  */
-                activeQuotes.length = 0;
-                activeQuotes.push(...quotesInStorage);
+                categoryFilter.length = 0;
+                categoryFilter.push(...quotesInStorage);
                 //maxID = findMaxID(JSON.parse(localStorage.getItem("savedQuotes")));
             }
         } catch (error) {
@@ -67,7 +67,7 @@ document.addEventListener("DOMContentLoaded", () => {
         if (lastSavedQuote) {
             const { index, quote } = JSON.parse(lastSavedQuote);
             quoteDisplay.innerHTML = quote.text;
-            shuffled = displayRandomQuotes(activeQuotes);
+            shuffled = displayRandomQuotes(categoryFilter);
         }
     }
 
@@ -101,8 +101,8 @@ document.addEventListener("DOMContentLoaded", () => {
         const userAddedQuote = document.createElement("p");
 
         if (quoteValue !== "" && categoryValue !== "") {
-            activeQuotes.push({
-                id: activeQuotes.length ? Math.max(...activeQuotes.map((q) => q.id)) + 1 : 0,
+            categoryFilter.push({
+                id: categoryFilter.length ? Math.max(...categoryFilter.map((q) => q.id)) + 1 : 0,
                 text: quoteValue,
                 category: categoryValue
             });
@@ -115,7 +115,7 @@ document.addEventListener("DOMContentLoaded", () => {
             alert("Fill in both fields.");
         }
 
-        localStorage.setItem("savedQuotes", JSON.stringify(activeQuotes));
+        localStorage.setItem("savedQuotes", JSON.stringify(categoryFilter));
 
         /**
          * Upon user-added quote to localStorage, immediately refresh
@@ -125,7 +125,7 @@ document.addEventListener("DOMContentLoaded", () => {
          * via form, this will immediately cause the quote to be included
          * in the quotes to be displayed (without manual refresh).
          */
-        shuffled = displayRandomQuotes(activeQuotes);
+        shuffled = displayRandomQuotes(categoryFilter);
     }
 
     /**
@@ -176,14 +176,14 @@ document.addEventListener("DOMContentLoaded", () => {
                 const maxID = findMaxID(quotesInStorage);
 
                 if (Array.isArray(quotesInStorage)) {
-                    activeQuotes.length = 0;
+                    categoryFilter.length = 0;
 
                     const updatedQuotes = importedQuotes.map((newQuote, index) => ({
                         ...newQuote,
                         id: maxID + index + 1
                     }));
 
-                    activeQuotes.push(...quotesInStorage, ...updatedQuotes);
+                    categoryFilter.push(...quotesInStorage, ...updatedQuotes);
                 }
             } catch (error) {
                 console.error("Could not parse quotes from localStorage:", error);
@@ -196,14 +196,14 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function saveQuotes() {
-        localStorage.setItem("savedQuotes", JSON.stringify(activeQuotes));
+        localStorage.setItem("savedQuotes", JSON.stringify(categoryFilter));
 
         /**
          * Immediately add the imported file to the queue
          * of data to be displayed, without the need for
          * a manual reload.
          */
-        shuffled = displayRandomQuotes(activeQuotes);
+        shuffled = displayRandomQuotes(categoryFilter);
     }
 
     function populateCategories() {
@@ -247,10 +247,10 @@ document.addEventListener("DOMContentLoaded", () => {
         currentIndex = 0;
         const quotesInStorage = JSON.parse(localStorage.getItem("savedQuotes"));
 
-        activeQuotes =
+        categoryFilter =
             category === "all" ? [...quotesInStorage] : quotesInStorage.filter((quote) => quote.category === category);
 
-        shuffled = displayRandomQuotes(activeQuotes);
+        shuffled = displayRandomQuotes(categoryFilter);
 
         if (shuffled.length > 0) showRandomQuote();
         else quoteDisplay.innerHTML = "<em>There are no quotes to show in this category.</em>";
@@ -267,7 +267,7 @@ document.addEventListener("DOMContentLoaded", () => {
         currentIndex++;
 
         if (currentIndex >= shuffled.length) {
-            shuffled = displayRandomQuotes(activeQuotes); // Reshuffle data
+            shuffled = displayRandomQuotes(categoryFilter); // Reshuffle data
             currentIndex = 0;
 
             /**
