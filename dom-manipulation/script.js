@@ -206,7 +206,7 @@ document.addEventListener("DOMContentLoaded", () => {
         shuffled = displayRandomQuotes(activeQuotes);
     }
 
-    function generateCategoryValues() {
+    function populateCategories() {
         let quotesInStorage = JSON.parse(localStorage.getItem("savedQuotes"));
 
         try {
@@ -235,12 +235,12 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
-    function filterQuotesByCategory(category) {
+    function filterQuote(category) {
         /**
          * currentIndex must be reset in here, else it will yield
          * an error. This is because currentIndex is a global variable,
          * and for each time the quotes are traversed, currentIndex is
-         * incremented by 1. So when the filterQuotesByCategory runs, if
+         * incremented by 1. So when the filterQuote runs, if
          * the currentIndex is, say 7, and the filtered result has a length
          * of 2, an error will be thrown.
          */
@@ -257,7 +257,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     quoteSelect.addEventListener("change", (event) => {
-        filterQuotesByCategory(event.target.value);
+        filterQuote(event.target.value);
     });
 
     addQuoteBtn.addEventListener("click", createAddQuoteForm);
@@ -289,5 +289,5 @@ document.addEventListener("DOMContentLoaded", () => {
 
     loadQuotes();
     exportJsonFile();
-    generateCategoryValues();
+    populateCategories();
 });
