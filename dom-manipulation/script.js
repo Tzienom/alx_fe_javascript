@@ -14,7 +14,7 @@ document.addEventListener("DOMContentLoaded", () => {
     let currentIndex = 0; // Would be used to increment shuffled data index progressively.
 
     let currentQuote; // Would be used to hold quote in sessionStorage.
-    //let activeQ
+    let activeQuotes = [...quotes];
 
     let quoteCategories = [];
 
@@ -51,8 +51,8 @@ document.addEventListener("DOMContentLoaded", () => {
                  * incremented twice the original length, each time there
                  * is a page reload.
                  */
-                quotes.length = 0;
-                quotes.push(...quotesInStorage);
+                activeQuotes.length = 0;
+                activeQuotes.push(...quotesInStorage);
                 //maxID = findMaxID(JSON.parse(localStorage.getItem("savedQuotes")));
             }
         } catch (error) {
@@ -67,7 +67,7 @@ document.addEventListener("DOMContentLoaded", () => {
         if (lastSavedQuote) {
             const { index, quote } = JSON.parse(lastSavedQuote);
             quoteDisplay.innerHTML = quote.text;
-            shuffled = displayRandomQuotes(quotes);
+            shuffled = displayRandomQuotes(activeQuotes);
         }
     }
 
@@ -101,8 +101,8 @@ document.addEventListener("DOMContentLoaded", () => {
         const userAddedQuote = document.createElement("p");
 
         if (quoteValue !== "" && categoryValue !== "") {
-            quotes.push({
-                id: quotes.length ? Math.max(...quotes.map((q) => q.id)) + 1 : 0,
+            activeQuotes.push({
+                id: activeQuotes.length ? Math.max(...activeQuotes.map((q) => q.id)) + 1 : 0,
                 text: quoteValue,
                 category: categoryValue
             });
@@ -115,7 +115,7 @@ document.addEventListener("DOMContentLoaded", () => {
             alert("Fill in both fields.");
         }
 
-        localStorage.setItem("savedQuotes", JSON.stringify(quotes));
+        localStorage.setItem("savedQuotes", JSON.stringify(activeQuotes));
 
         /**
          * Upon user-added quote to localStorage, immediately refresh
@@ -125,7 +125,7 @@ document.addEventListener("DOMContentLoaded", () => {
          * via form, this will immediately cause the quote to be included
          * in the quotes to be displayed (without manual refresh).
          */
-        shuffled = displayRandomQuotes(quotes);
+        shuffled = displayRandomQuotes(activeQuotes);
     }
 
     /**
@@ -145,30 +145,6 @@ document.addEventListener("DOMContentLoaded", () => {
             sessionStorage.setItem("currentQuote", JSON.stringify(lastViewedQuote));
         }
     }
-
-    //newQuoteBtn.addEventListener("click", () => {
-    //    currentIndex++;
-    //
-    //    if (currentIndex >= shuffled.length) {
-    //        shuffled = displayRandomQuotes(quotes); // Reshuffle data
-    //        currentIndex = 0;
-    //
-    //        /**
-    //         * showRandQuote() is invoked here in order to reshuffle
-    //         * data immediately.
-    //         *
-    //         * NOTE: Because currentIndex = 0 at the start of the script and yet
-    //         * there is no preloaded quote, the first button click shall display no
-    //         * quote when currentIndex = 1, until currentIndex = 2, which skips
-    //         * the first quote in the array. It is also for that reason showRandomQuote
-    //         * is called here--to fix skipping and not displaying the first quote.
-    //         */
-    //        showRandomQuote();
-    //        return;
-    //    }
-    //
-    //    showRandomQuote();
-    //});
 
     // Allow user to download quotes as JSON file
     function exportJsonFile() {
@@ -200,14 +176,14 @@ document.addEventListener("DOMContentLoaded", () => {
                 const maxID = findMaxID(quotesInStorage);
 
                 if (Array.isArray(quotesInStorage)) {
-                    quotes.length = 0;
+                    activeQuotes.length = 0;
 
                     const updatedQuotes = importedQuotes.map((newQuote, index) => ({
                         ...newQuote,
                         id: maxID + index + 1
                     }));
 
-                    quotes.push(...quotesInStorage, ...updatedQuotes);
+                    activeQuotes.push(...quotesInStorage, ...updatedQuotes);
                 }
             } catch (error) {
                 console.error("Could not parse quotes from localStorage:", error);
@@ -220,14 +196,14 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function saveQuotes() {
-        localStorage.setItem("savedQuotes", JSON.stringify(quotes));
+        localStorage.setItem("savedQuotes", JSON.stringify(activeQuotes));
 
         /**
          * Immediately add the imported file to the queue
          * of data to be displayed, without the need for
          * a manual reload.
          */
-        shuffled = displayRandomQuotes(quotes);
+        shuffled = displayRandomQuotes(activeQuotes);
     }
 
     function generateCategoryValues() {
@@ -254,22 +230,30 @@ document.addEventListener("DOMContentLoaded", () => {
                     quoteSelect.appendChild(option);
                 });
             }
-
-            return quoteCategories;
         } catch (error) {
             console.log("Could not parse quote categories from localStorage:", error);
         }
     }
 
     function filterQuotesByCategory(category) {
+        /**
+         * currentIndex must be reset in here, else it will yield
+         * an error. This is because currentIndex is a global variable,
+         * and for each time the quotes are traversed, currentIndex is
+         * incremented by 1. So when the filterQuotesByCategory runs, if
+         * the currentIndex is, say 7, and the filtered result has a length
+         * of 2, an error will be thrown.
+         */
+        currentIndex = 0;
         const quotesInStorage = JSON.parse(localStorage.getItem("savedQuotes"));
 
-        const filteredQuotes = quotesInStorage.filter((quote) => quote.category === category);
+        activeQuotes =
+            category === "all" ? [...quotesInStorage] : quotesInStorage.filter((quote) => quote.category === category);
 
-        shuffled = displayRandomQuotes(filteredQuotes);
-        showRandomQuote();
+        shuffled = displayRandomQuotes(activeQuotes);
 
-        return;
+        if (shuffled.length > 0) showRandomQuote();
+        else quoteDisplay.innerHTML = "<em>There are no quotes to show in this category.</em>";
     }
 
     quoteSelect.addEventListener("change", (event) => {
@@ -283,11 +267,11 @@ document.addEventListener("DOMContentLoaded", () => {
         currentIndex++;
 
         if (currentIndex >= shuffled.length) {
-            shuffled = displayRandomQuotes(filterQuotesByCategory); // Reshuffle data
+            shuffled = displayRandomQuotes(activeQuotes); // Reshuffle data
             currentIndex = 0;
 
             /**
-             * showRandQuote() is invoked here in order to reshuffle
+             * showRandomQuote() is invoked here in order to reshuffle
              * data immediately.
              *
              * NOTE: Because currentIndex = 0 at the start of the script and yet
@@ -305,6 +289,5 @@ document.addEventListener("DOMContentLoaded", () => {
 
     loadQuotes();
     exportJsonFile();
-    //filterQuotesByCategory();
     generateCategoryValues();
 });
