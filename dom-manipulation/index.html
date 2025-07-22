@@ -36,6 +36,7 @@
 
                 <p id="category">Category:</p>
             </div>
+            <div class="button-group"></div>
             <!-- End of quoteDisplay -->
 
             <button id="newQuote">Show New Quote</button>
@@ -47,6 +48,25 @@
                 <button id="addQuote">Add Quote</button>
                 <input type="file" id="importFile" accept=".json" />
             </div>
+
+            <form id="quote-update-form">
+                <div class="field-container">
+                    <label for="quote-update" class="label-update">New Quote:</label>
+                    <textarea rows="7" id="quote-update" class="input-update"></textarea>
+                </div>
+
+                <div class="field-container">
+                    <label for="category-update" class="label-update">New Category:</label>
+                    <input type="text" id="category-update" class="input-update" />
+                </div>
+
+                <div class="field-container">
+                    <label for="author-update" class="label-update">New Author:</label>
+                    <input type="text" id="author-update" class="input-update" />
+                </div>
+
+                <button type="submit" class="update-quote-btn btn">Update Quote</button>
+            </form>
         </main>
 
         <script type="module" src="script.js"></script>

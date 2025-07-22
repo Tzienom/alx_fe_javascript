@@ -101,3 +101,59 @@ main {
 .category-input {
     margin: 1rem 0;
 }
+
+.button-group {
+    margin: 1rem 0;
+}
+
+.button-group {
+    display: flex;
+    gap: 1rem;
+}
+
+/* QUOTE UPDATE FORM */
+#quote-update-form {
+    border: none;
+    outline: none;
+
+    background-color: #1f2a48;
+    padding: 2em 1.5em;
+    width: 85%;
+    max-width: 450px;
+    margin: auto;
+    border-radius: 10px;
+
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+
+    display: none;
+}
+
+#quote-update {
+    display: block;
+    width: 100%;
+    padding: 0.5em;
+    border-radius: 4px;
+}
+
+.field-container + .field-container {
+    margin-top: 1.2rem;
+}
+
+.label-update {
+    display: block;
+    margin-bottom: 0.5rem;
+}
+
+.input-update {
+    background-color: white;
+    color: #1f2a48;
+}
+
+.update-quote-btn {
+    display: block;
+    width: 100%;
+    margin-top: 2rem;
+}
