@@ -9,6 +9,16 @@ import {
 document.addEventListener("DOMContentLoaded", () => {
     const serverURL = "https://jsonplaceholder.typicode.com/posts";
 
+    async function createQuoteOnServer(quoteObj) {
+        const res = await fetch(serverURL, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(quoteObj)
+        });
+
+        return await res.json();
+    }
+
     const quoteDisplay = document.getElementById("quoteDisplay");
     const newQuoteBtn = document.getElementById("newQuote");
     const newQuote = document.getElementById("newQuoteText");
