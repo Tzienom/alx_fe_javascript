@@ -7,6 +7,8 @@ import {
 } from "./fetchQuotes.js";
 
 document.addEventListener("DOMContentLoaded", () => {
+    const serverURL = "https://jsonplaceholder.typicode.com/posts";
+
     const quoteDisplay = document.getElementById("quoteDisplay");
     const newQuoteBtn = document.getElementById("newQuote");
     const newQuote = document.getElementById("newQuoteText");
