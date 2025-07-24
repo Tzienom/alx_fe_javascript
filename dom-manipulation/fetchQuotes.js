@@ -8,6 +8,7 @@ export async function fetchQuotesFromServer() {
         return serverQuotes;
     } catch (error) {
         console.log("Could not fetch quotes from the server:", error);
+        throw error;
     }
 }
 

@@ -6,7 +6,7 @@ import {
     serverURL
 } from "./fetchQuotes.js";
 
-//import { syncQuotes } from "./syncQuotes";
+import { showNotification } from "./notifications.js";
 
 document.addEventListener("DOMContentLoaded", () => {
     const quoteDisplay = document.getElementById("quoteDisplay");

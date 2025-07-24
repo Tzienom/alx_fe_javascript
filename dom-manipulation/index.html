@@ -44,9 +44,20 @@
                 <input type="file" id="importFile" accept=".json" />
             </div>
 
-            <div class="add-quote-form">
-                <input id="newQuoteText" type="text" placeholder="Enter a new quote" />
-                <input id="newQuoteCategory" type="text" placeholder="Enter quote category" class="category-input" />
+            <div>
+                <div class="field-container">
+                    <label for="newQuoteText">Quote:</label>
+                    <input type="text" id="newQuoteText" placeholder="Enter a quote" />
+                </div>
+                <div class="field-container category-input">
+                    <label for="newQuoteCategory">Category:</label>
+                    <input type="text" id="newQuoteCategory" placeholder="Enter quote category" />
+                </div>
+                <div class="field-container">
+                    <label for="newQuoteAuthor">Author:</label>
+                    <input type="text" id="newQuoteAuthor" placeholder="Enter an author" />
+                </div>
+
                 <button id="addQuote">Add Quote</button>
                 <button id="syncQuotes">Sync Quotes</button>
             </div>
@@ -54,24 +65,22 @@
             <form id="quote-update-form">
                 <div class="field-container">
                     <label for="quote-update" class="label-update">New Quote:</label>
-                    <textarea rows="7" id="quote-update" class="input-update"></textarea>
+                    <input type="text" id="quote-update" class="input-update" />
                 </div>
-
                 <div class="field-container">
                     <label for="category-update" class="label-update">New Category:</label>
-                    <input type="text" id="category-update" class="input-update" />
+                    <select id="category-update" class="input-update"></select>
                 </div>
-
                 <div class="field-container">
                     <label for="author-update" class="label-update">New Author:</label>
-                    <input type="text" id="author-update" class="input-update" />
+                    <input type="text" id="author-update" class="input-update" placeholder="Update Author" />
                 </div>
 
-                <button id="update-quote-btn" type="submit" class="btn">Update Quote</button>
-                <button id="cancel-btn" class="btn cancel-btn">Cancel Update</button>
+                <button type="button" id="update-quote-btn" class="update-quote-btn">Update Quote</button>
+                <button type="button" id="cancel-btn" class="update-quote-btn">Cancel Update</button>
             </form>
         </main>
 
-        <script type="module" src="script.js"></script>
+        <script type="module" src="script2.js"></script>
     </body>
 </html>
