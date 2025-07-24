@@ -6,25 +6,22 @@ import {
     serverURL
 } from "./fetchQuotes.js";
 
+//import { syncQuotes } from "./syncQuotes";
+
 document.addEventListener("DOMContentLoaded", () => {
-    const serverURL = "https://jsonplaceholder.typicode.com/posts";
-
-    async function createQuoteOnServer(quoteObj) {
-        const res = await fetch(serverURL, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(quoteObj)
-        });
-
-        return await res.json();
-    }
-
     const quoteDisplay = document.getElementById("quoteDisplay");
     const newQuoteBtn = document.getElementById("newQuote");
     const newQuote = document.getElementById("newQuoteText");
     const quoteCategory = document.getElementById("newQuoteCategory");
     const addQuoteBtn = document.getElementById("addQuote");
     const importFileBtn = document.getElementById("importFile");
+
+    const quoteUpdateForm = document.getElementById("quote-update-form");
+    const updateQuoteBtn = document.getElementById("update-quote-btn");
+    const cancelUpdateBtn = document.getElementById("cancel-btn");
+    const newQuoteUpdate = document.getElementById("quote-update");
+    const newCategoryUpdate = document.getElementById("category-update");
+    const newAuthorUpdate = document.getElementById("author-update");
 
     const quoteSelect = document.getElementById("quote-categories");
     const buttonGroup = document.querySelector(".button-group");
@@ -33,6 +30,7 @@ document.addEventListener("DOMContentLoaded", () => {
     let currentIndex = 0; // Would be used to increment shuffled data index progressively.
 
     let currentQuote; // Would be used to hold quote in sessionStorage.
+    let currentCategory;
 
     let quoteCategories = [];
     let serverQuotes = [];
@@ -80,12 +78,13 @@ document.addEventListener("DOMContentLoaded", () => {
          */
         const lastSavedQuote = sessionStorage.getItem("currentQuote");
         if (lastSavedQuote) {
-            const { index, quote } = JSON.parse(lastSavedQuote);
+            const { index, quote, category } = JSON.parse(lastSavedQuote);
             currentIndex = shuffled.findIndex((item) => item.id === quote.id);
 
             if (currentIndex >= 0) {
                 currentQuote = shuffled[currentIndex];
                 quoteDisplay.innerHTML = currentQuote.text;
+                quoteSelect.value = currentQuote.category;
             } else {
                 currentIndex = 0;
                 showRandomQuote();
@@ -94,7 +93,7 @@ document.addEventListener("DOMContentLoaded", () => {
             return;
         }
 
-        //populateCategories();
+        populateCategories();
         editDeleteQuote();
     }
 
@@ -137,11 +136,11 @@ document.addEventListener("DOMContentLoaded", () => {
         if (currentIndex < shuffled.length) {
             let lastViewedQuote = {
                 index: currentIndex,
-                quote: currentQuote
+                quote: currentQuote,
+                category: currentCategory
             };
 
             sessionStorage.setItem("currentQuote", JSON.stringify(lastViewedQuote));
-            //sessionStorage.setItem("currentIndex", JSON.stringify(currentIndex));
         }
 
         editDeleteQuote();
@@ -169,12 +168,11 @@ document.addEventListener("DOMContentLoaded", () => {
             userAddedQuote.textContent = quoteValue;
             quoteDisplay.appendChild(userAddedQuote);
 
-            //populateCategories(categoryValue);
+            localStorage.setItem("savedQuotes", JSON.stringify(categoryFilter));
+            populateCategories();
         } else {
             alert("Fill in both fields.");
         }
-
-        localStorage.setItem("savedQuotes", JSON.stringify(categoryFilter));
 
         /**
          * Upon user-added quote to localStorage, immediately refresh
@@ -226,25 +224,23 @@ document.addEventListener("DOMContentLoaded", () => {
             });
 
             editBtn.addEventListener("click", () => {
-                const quoteUpdateForm = document.getElementById("quote-update-form");
-                const updateQuoteBtn = document.getElementById("update-quote-btn");
-                const newQuoteUpdate = document.getElementById("quote-update");
-                const newCategoryUpdate = document.getElementById("category-update");
-                const newAuthorUpdate = document.getElementById("author-update");
+                newQuoteUpdate.value = currentQuote.text;
+                newCategoryUpdate.value = currentQuote.category;
+                newAuthorUpdate.value = currentQuote.author || "Unknown";
 
                 quoteUpdateForm.style.display = "block";
-
-                updateQuoteBtn.addEventListener("click", () => {
-                    if (newQuoteUpdate.value !== "" || newCategoryUpdate.value !== "" || newAuthorUpdate.value !== "") {
-                        //await updateQuoteOnServer(displayedQuote.id);
-                        console.log(newQuoteUpdate.value, newCategoryUpdate.value, newAuthorUpdate.value);
-                    }
-                });
             });
 
             return;
         }
     }
+
+    updateQuoteBtn.addEventListener("click", () => {
+        if (newQuoteUpdate.value !== "" || newCategoryUpdate.value !== "" || newAuthorUpdate.value !== "") {
+            //await updateQuoteOnServer(displayedQuote.id);
+            console.log(newQuoteUpdate.value, newCategoryUpdate.value, newAuthorUpdate.value);
+        }
+    });
 
     // Allow user to download quotes as JSON file
     function exportJsonFile() {
@@ -312,17 +308,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
         try {
             if (Array.isArray(quotesInStorage)) {
+                quoteSelect.innerHTML = "";
+
                 const defaultOption = document.createElement("option");
                 defaultOption.value = "all";
                 defaultOption.textContent = "All";
 
                 quoteSelect.appendChild(defaultOption);
+                quoteCategories = [];
 
-                quotesInStorage.map((quoteCategory) => {
-                    quoteCategories.push(quoteCategory.category);
-                });
-
-                quoteCategories = quoteCategories.filter((value, index, self) => self.indexOf(value) === index);
+                quoteCategories = [...new Set(quotesInStorage.map((quote) => quote.category))];
 
                 quoteCategories.forEach((category) => {
                     const option = document.createElement("option");
@@ -367,6 +362,8 @@ document.addEventListener("DOMContentLoaded", () => {
     importFileBtn.addEventListener("change", importFromJsonFile);
 
     newQuoteBtn.addEventListener("click", () => {
+        //currentIndex++;
+
         if (currentIndex >= shuffled.length) {
             shuffled = displayRandomQuotes(categoryFilter); // Reshuffle data
             currentIndex = 0;

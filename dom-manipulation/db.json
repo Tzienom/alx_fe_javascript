@@ -182,14 +182,40 @@
     },
     {
       "id": "3e31",
-      "text": "...wrought from the hand of a Master intent on sculpting his finest work.",
-      "category": "Programming",
-      "editable": true
+      "text": "You had become to me what Mona Lisa is to the rest of the world—an artistic excellence, wrought from the hand of a Master intent on sculpting his finest work, but you, my dear, remain unmarred by the hands of man!",
+      "category": "Romance",
+      "editable": true,
+      "author": "Gabriel Ayuba"
     },
     {
       "id": "2ba9",
       "text": "Write codes that are easy to delete, not easy to scale.",
-      "category": "Romance",
+      "category": "Programming",
+      "editable": true,
+      "author": "Unknown"
+    },
+    {
+      "id": "2f9b",
+      "text": "Write codes that are easy to delete, not easy to scale",
+      "category": "Programming",
+      "editable": true
+    },
+    {
+      "id": "c067",
+      "text": "Testing one, two...",
+      "category": "Experiment",
+      "editable": true
+    },
+    {
+      "id": "af16",
+      "text": "Testing again",
+      "category": "Experiment2",
+      "editable": true
+    },
+    {
+      "id": "291a",
+      "text": "Trying one more time",
+      "category": "Experiment3",
       "editable": true
     }
   ]

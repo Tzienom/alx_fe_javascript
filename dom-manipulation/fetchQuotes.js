@@ -1,5 +1,4 @@
-//export const serverURL = "http://localhost:3000/quotes";
-export const serverURL = "https://jsonplaceholder.typicode.com/posts";
+export const serverURL = "http://localhost:3000/quotes";
 
 export async function fetchQuotesFromServer() {
     try {

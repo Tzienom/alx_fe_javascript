@@ -22,31 +22,33 @@
                     <button class="btn search-btn">Search</button>
                 </div>
 
-                <select id="quote-categories"></select>
+                <select name="quote-categories" id="quote-categories"></select>
             </div>
             <!-- End of flex -->
 
-            <div id="quoteDisplay">
-                <div class="flex">
-                    <p id="author" class="paragraph">Author</p>
-                    <p id="date-added" class="paragraph">Date Added</p>
+            <div class="quote-block">
+                <p id="quoteDisplay"></p>
+
+                <div class="quote-info">
+                    <span>Author: <span id="quoteAuthor"></span></span>
+                    <span>Category: <span id="quoteCategory"></span></span>
                 </div>
 
-                <p id="quote">Lorem ipsum dolor sit amet...</p>
-
-                <p id="category">Category:</p>
+                <div class="button-group"></div>
             </div>
-            <div class="button-group"></div>
-            <!-- End of quoteDisplay -->
+            <!-- End of quote-block -->
 
-            <button id="newQuote">Show New Quote</button>
-            <button id="export-btn">Export Quotes</button>
+            <div>
+                <button id="newQuote">Show New Quote</button>
+                <button id="export-btn">Export Quotes</button>
+                <input type="file" id="importFile" accept=".json" />
+            </div>
 
             <div class="add-quote-form">
                 <input id="newQuoteText" type="text" placeholder="Enter a new quote" />
                 <input id="newQuoteCategory" type="text" placeholder="Enter quote category" class="category-input" />
                 <button id="addQuote">Add Quote</button>
-                <input type="file" id="importFile" accept=".json" />
+                <button id="syncQuotes">Sync Quotes</button>
             </div>
 
             <form id="quote-update-form">
@@ -65,7 +67,8 @@
                     <input type="text" id="author-update" class="input-update" />
                 </div>
 
-                <button type="submit" class="update-quote-btn btn">Update Quote</button>
+                <button id="update-quote-btn" type="submit" class="btn">Update Quote</button>
+                <button id="cancel-btn" class="btn cancel-btn">Cancel Update</button>
             </form>
         </main>
 
