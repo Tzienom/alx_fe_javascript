@@ -8,7 +8,7 @@ export function showNotification(message, duration = 5000) {
     background: #1f2a48;
     color: white;
     padding: 1em;
-    border-radius; 5px;
+    border-radius: 5px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
     z-index: 1000;`;
 

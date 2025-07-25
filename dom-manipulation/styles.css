@@ -164,3 +164,28 @@ main {
     width: 100%;
     margin-top: 2rem;
 }
+
+/* MODAL */
+.modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: #1f2a48;
+    padding: 2em;
+    border-radius: 10px;
+    color: white;
+    z-index: 1000;
+    max-width: 500px;
+    width: 90%;
+}
+
+.modal button {
+    margin: 0.5rem;
+}
+
+.conflict {
+    margin-bottom: 1.5em;
+    border-bottom: 1px solid #ffffff33;
+    padding-bottom: 1em;
+}
