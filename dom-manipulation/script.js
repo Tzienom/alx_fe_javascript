@@ -160,6 +160,7 @@ export async function syncQuotes(maxRetries = 3, retryDelay = 60000) {
 
       document.dispatchEvent(new Event("quotesUpdated"));
       showNotification("Quotes synced successfully!", 5000);
+      alert("Quotes synced with server!");
 
       setInterval(() => syncQuotes(maxRetries, retryDelay), 30000);
       return;
