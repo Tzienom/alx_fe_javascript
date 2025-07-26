@@ -3,84 +3,278 @@
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta name="description" content="A dynamic quote generator with search, categories, and sync functionality" />
+        <meta name="theme-color" content="#141c2f" />
+
+        <!-- Preconnect to improve performance -->
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+        <!-- Font loading with display swap for better performance -->
         <link
             href="https://fonts.googleapis.com/css2?family=TikTok+Sans:opsz,wght@12..36,300..900&display=swap"
             rel="stylesheet" />
+
         <link rel="stylesheet" href="styles.css" />
         <title>Dynamic Quote Generator</title>
     </head>
 
     <body>
-        <h1 class="heading-1">Dynamic Quote Generator</h1>
+        <!-- Main heading with better semantic structure -->
+        <header>
+            <h1 class="heading-1">Dynamic Quote Generator</h1>
+        </header>
 
-        <main>
-            <div class="search-flex flex">
-                <div class="search-bar">
-                    <input type="search" placeholder="Search Quote" class="input-field" id="search-input" />
-                    <button class="btn search-btn">Search</button>
+        <main role="main">
+            <!-- Search and filter section -->
+            <section class="search-section" aria-label="Search and filter quotes">
+                <div class="search-flex flex">
+                    <div class="search-bar">
+                        <label for="search-input" class="visually-hidden">Search quotes</label>
+                        <input
+                            type="search"
+                            placeholder="Search quotes, authors, or categories..."
+                            class="input-field"
+                            id="search-input"
+                            aria-describedby="search-help" />
+                        <button class="btn search-btn" type="button" aria-label="Search quotes">
+                            <span aria-hidden="true">🔍</span>
+                            <span class="visually-hidden">Search</span>
+                        </button>
+                        <div id="search-help" class="visually-hidden">
+                            Search through quotes by text, author, or category
+                        </div>
+                    </div>
+
+                    <div class="category-filter">
+                        <label for="quote-categories" class="visually-hidden">Filter by category</label>
+                        <select name="quote-categories" id="quote-categories" aria-label="Filter quotes by category">
+                            <option value="all">All Categories</option>
+                        </select>
+                    </div>
                 </div>
+            </section>
 
-                <select name="quote-categories" id="quote-categories"></select>
+            <!-- Quote display section -->
+            <section class="quote-section" aria-label="Current quote">
+                <div class="quote-block">
+                    <blockquote>
+                        <p id="quoteDisplay" aria-live="polite">Loading quotes...</p>
+                    </blockquote>
+
+                    <div class="quote-info" role="contentinfo">
+                        <span>
+                            <strong>Author:</strong>
+                            <span id="quoteAuthor" aria-label="Quote author">Unknown</span>
+                        </span>
+                        <span>
+                            <strong>Category:</strong>
+                            <span id="quoteCategory" aria-label="Quote category">General</span>
+                        </span>
+                    </div>
+
+                    <div class="button-group" role="group" aria-label="Quote actions">
+                        <!-- Edit and delete buttons will be dynamically inserted here -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- Navigation section -->
+            <section class="navigation-section">
+                <div class="controls">
+                    <button id="newQuote" type="button" aria-describedby="new-quote-help">Show New Quote</button>
+                    <div id="new-quote-help" class="visually-hidden">
+                        Display a random quote from the current selection
+                    </div>
+                </div>
+            </section>
+
+            <!-- Data management section -->
+            <section class="data-section form-section">
+                <h3>Import & Export</h3>
+                <div class="controls">
+                    <button id="export-btn" type="button" aria-describedby="export-help">Export Quotes</button>
+                    <div id="export-help" class="visually-hidden">Download all quotes as a JSON file</div>
+
+                    <label
+                        for="importFile"
+                        class="btn"
+                        style="display: inline-block; text-align: center; cursor: pointer">
+                        Import Quotes
+                        <input
+                            type="file"
+                            id="importFile"
+                            accept=".json"
+                            class="visually-hidden"
+                            aria-describedby="import-help" />
+                    </label>
+                    <div id="import-help" class="visually-hidden">Upload a JSON file containing quotes to import</div>
+
+                    <button id="syncQuotes" type="button" aria-describedby="sync-help">Sync Quotes</button>
+                    <div id="sync-help" class="visually-hidden">Synchronize quotes with the server</div>
+                </div>
+            </section>
+
+            <!-- Add new quote section -->
+            <section class="add-quote-section form-section">
+                <h3>Add New Quote</h3>
+                <form id="add-quote-form" novalidate>
+                    <div class="field-container">
+                        <label for="newQuoteText">Quote Text <span aria-label="required">*</span></label>
+                        <input
+                            type="text"
+                            id="newQuoteText"
+                            placeholder="Enter a meaningful quote"
+                            required
+                            aria-describedby="quote-text-help"
+                            maxlength="500" />
+                        <div id="quote-text-help" class="help-text">
+                            Enter the quote text (required, max 500 characters)
+                        </div>
+                    </div>
+
+                    <div class="field-container">
+                        <label for="newQuoteCategory">Category <span aria-label="required">*</span></label>
+                        <input
+                            type="text"
+                            id="newQuoteCategory"
+                            placeholder="Enter quote category"
+                            required
+                            aria-describedby="category-help"
+                            list="category-suggestions"
+                            maxlength="50" />
+                        <datalist id="category-suggestions">
+                            <!-- Categories will be populated dynamically -->
+                        </datalist>
+                        <div id="category-help" class="help-text">
+                            Categorize your quote (required, max 50 characters)
+                        </div>
+                    </div>
+
+                    <div class="field-container">
+                        <label for="newQuoteAuthor">Author</label>
+                        <input
+                            type="text"
+                            id="newQuoteAuthor"
+                            placeholder="Enter author name (optional)"
+                            aria-describedby="author-help"
+                            maxlength="100" />
+                        <div id="author-help" class="help-text">
+                            Author name (optional, defaults to "Unknown", max 100 characters)
+                        </div>
+                    </div>
+
+                    <button type="submit" id="addQuote" class="add-quote-btn">Add Quote</button>
+                </form>
+            </section>
+
+            <!-- Update quote modal -->
+            <div id="quote-update-form" role="dialog" aria-labelledby="update-form-title" aria-hidden="true">
+                <h3 id="update-form-title">Update Quote</h3>
+
+                <form id="update-form" novalidate>
+                    <div class="field-container">
+                        <label for="quote-update" class="label-update">
+                            Quote Text <span aria-label="required">*</span>
+                        </label>
+                        <input
+                            type="text"
+                            id="quote-update"
+                            class="input-update"
+                            required
+                            maxlength="500"
+                            aria-describedby="update-quote-help" />
+                        <div id="update-quote-help" class="help-text">
+                            Update the quote text (required, max 500 characters)
+                        </div>
+                    </div>
+
+                    <div class="field-container">
+                        <label for="category-update" class="label-update">
+                            Category <span aria-label="required">*</span>
+                        </label>
+                        <select
+                            id="category-update"
+                            class="input-update"
+                            required
+                            aria-describedby="update-category-help">
+                            <!-- Options populated dynamically -->
+                        </select>
+                        <div id="update-category-help" class="help-text">Select or update the quote category</div>
+                    </div>
+
+                    <div class="field-container">
+                        <label for="author-update" class="label-update">Author</label>
+                        <input
+                            type="text"
+                            id="author-update"
+                            class="input-update"
+                            placeholder="Update author name"
+                            maxlength="100"
+                            aria-describedby="update-author-help" />
+                        <div id="update-author-help" class="help-text">
+                            Update author name (optional, max 100 characters)
+                        </div>
+                    </div>
+
+                    <button type="button" id="update-quote-btn" class="update-quote-btn">Update Quote</button>
+                    <button type="button" id="cancel-btn" class="update-quote-btn">Cancel</button>
+                </form>
             </div>
-            <!-- End of flex -->
-
-            <div class="quote-block">
-                <p id="quoteDisplay"></p>
-
-                <div class="quote-info">
-                    <span>Author: <span id="quoteAuthor"></span></span>
-                    <span>Category: <span id="quoteCategory"></span></span>
-                </div>
-
-                <div class="button-group"></div>
-            </div>
-            <!-- End of quote-block -->
-
-            <div>
-                <button id="newQuote">Show New Quote</button>
-                <button id="export-btn">Export Quotes</button>
-                <input type="file" id="importFile" accept=".json" />
-            </div>
-
-            <div>
-                <div class="field-container">
-                    <label for="newQuoteText">Quote:</label>
-                    <input type="text" id="newQuoteText" placeholder="Enter a quote" />
-                </div>
-                <div class="field-container category-input">
-                    <label for="newQuoteCategory">Category:</label>
-                    <input type="text" id="newQuoteCategory" placeholder="Enter quote category" />
-                </div>
-                <div class="field-container">
-                    <label for="newQuoteAuthor">Author:</label>
-                    <input type="text" id="newQuoteAuthor" placeholder="Enter an author" />
-                </div>
-
-                <button id="addQuote">Add Quote</button>
-                <button id="syncQuotes">Sync Quotes</button>
-            </div>
-
-            <form id="quote-update-form">
-                <div class="field-container">
-                    <label for="quote-update" class="label-update">New Quote:</label>
-                    <input type="text" id="quote-update" class="input-update" />
-                </div>
-                <div class="field-container">
-                    <label for="category-update" class="label-update">New Category:</label>
-                    <select id="category-update" class="input-update"></select>
-                </div>
-                <div class="field-container">
-                    <label for="author-update" class="label-update">New Author:</label>
-                    <input type="text" id="author-update" class="input-update" placeholder="Update Author" />
-                </div>
-
-                <button type="button" id="update-quote-btn" class="update-quote-btn">Update Quote</button>
-                <button type="button" id="cancel-btn" class="update-quote-btn">Cancel Update</button>
-            </form>
         </main>
 
+        <!-- Loading overlay -->
+        <div id="loading-overlay" class="loading-overlay" style="display: none" role="status" aria-label="Loading">
+            <div class="loading-spinner"></div>
+            <span class="visually-hidden">Loading quotes...</span>
+        </div>
+
+        <!-- Skip to content link for accessibility -->
+        <a href="#main" class="skip-link visually-hidden">Skip to main content</a>
+
+        <!-- Error boundary for JavaScript errors -->
+        <div id="error-boundary" style="display: none" role="alert">
+            <h2>Something went wrong</h2>
+            <p>We're sorry, but the application encountered an error. Please refresh the page to try again.</p>
+            <button onclick="location.reload()">Refresh Page</button>
+        </div>
+
+        <!-- Scripts -->
         <script type="module" src="script.js"></script>
+
+        <!-- Service Worker for offline functionality (optional) -->
+        <script>
+            // Register service worker for offline functionality
+            if ("serviceWorker" in navigator) {
+                window.addEventListener("load", () => {
+                    navigator.serviceWorker
+                        .register("/sw.js")
+                        .then((registration) => {
+                            console.log("SW registered: ", registration);
+                        })
+                        .catch((registrationError) => {
+                            console.log("SW registration failed: ", registrationError);
+                        });
+                });
+            }
+
+            // Global error handler
+            window.addEventListener("error", (event) => {
+                console.error("Global error:", event.error);
+                const errorBoundary = document.getElementById("error-boundary");
+                const main = document.querySelector("main");
+
+                if (errorBoundary && main) {
+                    main.style.display = "none";
+                    errorBoundary.style.display = "block";
+                }
+            });
+
+            // Unhandled promise rejection handler
+            window.addEventListener("unhandledrejection", (event) => {
+                console.error("Unhandled promise rejection:", event.reason);
+                // Optionally show user-friendly error message
+            });
+        </script>
     </body>
 </html>
