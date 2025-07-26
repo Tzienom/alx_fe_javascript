@@ -179,6 +179,13 @@
       "text": "You miss 100% of the shots you don’t take.",
       "author": "Wayne Gretzky",
       "category": "Motivation"
+    },
+    {
+      "id": "c3ed",
+      "text": "...wrought from the hand of a Master intent on sculpting his finest work.",
+      "category": "Romance",
+      "author": "Gabriel Ayuba",
+      "editable": true
     }
   ]
 }
